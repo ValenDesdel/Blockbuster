@@ -1,0 +1,7 @@
+/.idea
+/build
+/nbproject
+build.xml
+manifest.mf
+/out
+Blockbuster.iml
