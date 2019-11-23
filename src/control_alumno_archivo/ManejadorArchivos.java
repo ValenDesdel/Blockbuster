@@ -1,82 +1,76 @@
 package control_alumno_archivo;
 
 import java.io.*;
+import java.util.TreeMap;
 
 public class ManejadorArchivos {
 
+    private TreeMap treeMapPeliculas;
+    private TreeMap treeMapUsuarios;
+    private TreeMap treeMapAlquiler;
+
     File filePeliculas = new File("peliculas.txt");
-    FileWriter fileWriterPeliculas = new FileWriter(filePeliculas, true);
-    BufferedWriter bufferedWriterPeliculas = new BufferedWriter(fileWriterPeliculas);
-    PrintWriter printWriterPeliculas = new PrintWriter(bufferedWriterPeliculas);
     FileReader fileReaderPeliculas = new FileReader(filePeliculas);
     BufferedReader bufferedReaderPeliculas = new BufferedReader(fileReaderPeliculas);
-
 
     File fileUsuarios = new File("usuarios.txt");
     FileReader fileReaderUsuario = new FileReader(fileUsuarios);
     BufferedReader bufferedReaderUsuario = new BufferedReader(fileReaderUsuario);
-    FileWriter fileWriterUsuarios = new FileWriter(fileUsuarios);
-    BufferedWriter bufferedWriterUsuarios = new BufferedWriter(fileWriterUsuarios);
-    PrintWriter printWriterUsuarios = new PrintWriter(bufferedWriterUsuarios);
 
     File fileAlquiler = new File("alquiler.txt");
     FileReader fileReaderAlquiler = new FileReader(fileAlquiler);
     BufferedReader bufferedReaderAlquiler = new BufferedReader(fileReaderAlquiler);
-    FileWriter fileWriterAlquiler = new FileWriter(fileAlquiler);
-    BufferedWriter bufferedWriterAlquiler = new BufferedWriter(fileWriterAlquiler);
-    PrintWriter printWriterAlquiler = new PrintWriter(bufferedWriterAlquiler);
 
     // Atributos de Pelicula
-    private String[] lineaPelicula = new String[arrayLength];
-    private String[] indexPelicula = new String[arrayLength];
-    private String[] titulo = new String[arrayLength];
-    private String[] genero = new String[arrayLength];
-    private String[] ciUsuario = new String[arrayLength];
-    private String[] fechaDevolucion = new String[arrayLength];
+    public String[] lineaPelicula = new String[arrayLength];
+    private int cantPeliculas = 0;
 
     // Atributos de Usuario
     private String[] lineaUsuario = new String[arrayLength];
-    private String[] cedula = new String[arrayLength];
-    private String[] nombre = new String[arrayLength];
-    private String[] telefono = new String[arrayLength];
 
     // Atributos de Alquiler
     private String[] lineaAlquiler = new String[arrayLength];
-    private String[] cedulaAlquiler = new String[arrayLength];
-    private String[] indexPeliculaAlquilada = new String[arrayLength];
 
     public final static int arrayLength = 15;
 
-    public ManejadorArchivos() throws IOException {
-
+    public ManejadorArchivos(TreeMap treeMapPeliculas, TreeMap treeMapUsuarios, TreeMap treeMapAlquiler) throws IOException {
+        this.treeMapPeliculas = treeMapPeliculas;
+        this.treeMapUsuarios = treeMapUsuarios;
+        this.treeMapAlquiler = treeMapAlquiler;
     }
 
     // Crear Pelicula
-    public void IngresarDatos(String titulo, String genero, int ciUsuario, String fechaDevolucion){
+    public void IngresarDatos(String titulo, String genero, String ciUsuario, String fechaDevolucion) throws IOException {
+        FileWriter fileWriterPeliculas = new FileWriter(filePeliculas, true);
         try {
-            this.fileWriterPeliculas.write(lineaPelicula.length + "," + titulo +","+ genero + "," + ciUsuario + "," + fechaDevolucion +"\r\n");
-            this.fileWriterPeliculas.close();
-
+            fileWriterPeliculas.write(cantPeliculas + "," + titulo + "," + genero + "," + ciUsuario + "," + fechaDevolucion +"\r\n");
+            fileWriterPeliculas.close();
+            Pelicula pelicula = new Pelicula(cantPeliculas, titulo, genero, ciUsuario, fechaDevolucion);
+            treeMapPeliculas.put(cantPeliculas, pelicula);
+            cantPeliculas++;
         }catch (IOException ex){
             System.out.println("No se ha encontrado el archivo");
         }
     }
 
     // Crear Usuario
-    public void IngresarDatos(int cedula, String nombre, int telefono){
+    public void IngresarDatos(int cedula, String nombre, String telefono) throws IOException {
+        FileWriter fileWriterUsuarios = new FileWriter(this.fileUsuarios, true);
         try {
-            this.fileWriterUsuarios.write(cedula +","+ nombre + "," + telefono + "\r\n");
-            this.fileWriterUsuarios.close();
+            fileWriterUsuarios.write(cedula +","+ nombre + "," + telefono + "\r\n");
+            fileWriterUsuarios.close();
+            Usuario usuario = new Usuario(cedula, nombre, telefono);
         }catch (IOException ex){
             System.out.println("No se ha encontrado el archivo");
         }
     }
 
     // Crear Alquiler
-    public void IngresarDatos(int cedula, int indexPelicula){
+    public void IngresarDatos(String cedula, String indexPelicula) throws IOException {
+        FileWriter fileWriterAlquiler = new FileWriter(fileAlquiler, true);
         try {
-            this.fileWriterUsuarios.write(cedula +","+ indexPelicula + "\r\n");
-            this.fileWriterUsuarios.close();
+            fileWriterAlquiler.write(cedula +","+ indexPelicula + "\r\n");
+            fileWriterAlquiler.close();
         }catch (IOException ex){
             System.out.println("No se ha encontrado el archivo");
         }
@@ -99,6 +93,7 @@ public class ManejadorArchivos {
         for(int i = 0; i < arrayLength; i++){
             if(( lines = bufferedReaderPeliculas.readLine()) != null){
                 lineaPelicula[i] = lines;
+                this.cantPeliculas++;
             }
         }
 
@@ -107,36 +102,28 @@ public class ManejadorArchivos {
         SepararStringUsuario();
     }
 
-    public void leerFilePeliculas() throws IOException {
-
-    }
-
-    public void leerFileUsuarios() throws IOException {
-
-    }
-
-    public void leerFileAlquiler() throws IOException {
-
-    }
-
     private void SepararStringPelicula(){
         for (int i = 0; i < lineaPelicula.length; i++) {
             if(lineaPelicula[i] != null){
-                indexPelicula[i] = lineaPelicula[i].split(",")[0];
-                titulo[i] = lineaPelicula[i].split(",")[1];
-                genero[i] = lineaPelicula[i].split(",")[2];
-                ciUsuario[i] = lineaPelicula[i].split(",")[3];
-                fechaDevolucion[i] = lineaPelicula[i].split(",")[4];
+                int indexPelicula = Integer.parseInt(lineaPelicula[i].split(",")[0]);
+                String titulo = lineaPelicula[i].split(",")[1];
+                String genero = lineaPelicula[i].split(",")[2];
+                String ciUsuario = lineaPelicula[i].split(",")[3];
+                String fechaDevolucion = lineaPelicula[i].split(",")[4];
+                Pelicula pelicula = new Pelicula(indexPelicula, titulo, genero, ciUsuario, fechaDevolucion);
+                this.treeMapPeliculas.put(indexPelicula, pelicula);
             }
         }
     }
 
     private void SepararStringUsuario(){
         for (int i = 0; i < lineaUsuario.length; i++) {
-            if(lineaPelicula[i] != null){
-                cedula[i] = lineaUsuario[i].split(",")[0];
-                nombre[i] = lineaUsuario[i].split(",")[1];
-                telefono[i] = lineaUsuario[i].split(",")[2];
+            if(lineaUsuario[i] != null){
+                int cedula = Integer.parseInt(lineaUsuario[i].split(",")[0]);
+                String nombre = lineaUsuario[i].split(",")[1];
+                String telefono = lineaUsuario[i].split(",")[2];
+                Usuario usuario = new Usuario(cedula, nombre, telefono);
+                treeMapUsuarios.put(cedula, usuario);
             }
         }
     }
@@ -144,8 +131,19 @@ public class ManejadorArchivos {
     private void SepararStringAlquiler(){
         for (int i = 0; i < lineaAlquiler.length; i++) {
             if(lineaAlquiler[i] != null){
-                cedulaAlquiler[i] = lineaAlquiler[i].split(",")[0];
-                indexPeliculaAlquilada[i] = lineaAlquiler[i].split(",")[1];
+                int cedulaAlquiler = Integer.parseInt(lineaAlquiler[i].split(",")[0]);
+                int indexPeliculaAlquilada = Integer.parseInt(lineaAlquiler[i].split(",")[1]);
+                if (treeMapAlquiler.containsKey(cedulaAlquiler)) {
+                    Alquiler alquiler;
+                    alquiler = (Alquiler) treeMapAlquiler.get(cedulaAlquiler);
+                    alquiler.addPeliculasAlquilada(indexPeliculaAlquilada);
+                    treeMapAlquiler.remove(cedulaAlquiler);
+                    treeMapAlquiler.put(cedulaAlquiler, alquiler);
+                } else {
+                    Alquiler alquiler = new Alquiler(cedulaAlquiler);
+                    alquiler.addPeliculasAlquilada(indexPeliculaAlquilada);
+                    treeMapAlquiler.put(cedulaAlquiler, alquiler);
+                }
             }
         }
     }
