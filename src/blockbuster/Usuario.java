@@ -1,4 +1,4 @@
-package control_alumno_archivo;
+package blockbuster;
 
 public class Usuario {
 

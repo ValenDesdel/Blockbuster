@@ -1,7 +1,8 @@
-package control_alumno_archivo;
+package blockbuster;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.TreeMap;
 
 public class Main {
 
@@ -12,7 +13,9 @@ public class Main {
         TreeMap treeMapAlquiler = new TreeMap();
         ManejadorArchivos manejadorArchivos = new ManejadorArchivos(treeMapPeliculas, treeMapUsuarios, treeMapAlquiler);
         manejadorArchivos.leerRepositorio();
-        Scanner scanner=new Scanner (System.in);
+        Procesos procesos = new Procesos(treeMapPeliculas, treeMapUsuarios, treeMapAlquiler, manejadorArchivos);
+        Consultas consultas = new Consultas(treeMapPeliculas, treeMapUsuarios, treeMapAlquiler);
+        Scanner scanner = new Scanner (System.in);
         int opciones=1;
 
         while (opciones != 3) {
@@ -34,22 +37,28 @@ public class Main {
                     System.out.println("5. Consultar peliculas a ser devueltas en una fecha específica");
                     System.out.println("6. Retroceder");
                     int accion = scanner.nextInt();
+                    scanner.nextLine();
 
                     switch (accion) {
                         case 1:
                             //Consultar Pelicula
+                            consultas.consultarPelicula();
                             break;
                         case 2:
                             // Consultar Usuario
+                            consultas.consultarUsuario();
                             break;
                         case 3:
-                            // Consultar peliculas alquiladas p/u
+                            // Consultar peliculas alquiladas por usuario
+                            consultas.consultarPeliculasAlquiladas();
                             break;
                         case 4:
                             // Consultar peliculas de un género
+                            consultas.consultarPeliculasPorGenero();
                             break;
                         case 5:
                             // Consultar peliculas a devolver en una fecha
+                            consultas.consultarPeliculasDevolucion();
                             break;
                         case 6:
                             // Retroceder
@@ -67,47 +76,33 @@ public class Main {
                     System.out.println("5. Registrar alquiler de una película");
                     System.out.println("6. Registrar devolución de película");
                     System.out.println("7. Retroceder");
-                    int proceso = scanner.nextInt();
+                    int eleccion = scanner.nextInt();
                     scanner.nextLine();
 
-                    switch (proceso) {
+                    switch (eleccion) {
                         case 1:
                             // Agregar Pelicula
-                            String titulo, genero;
-                            System.out.println("Ingrese el título de la pelicula:");
-                            titulo = scanner.nextLine();
-                            scanner.nextLine();
-                            System.out.println("Ingrese el género de la pelicula:");
-                            genero = scanner.nextLine();
-                            scanner.nextLine();
-                            manejadorArchivos.IngresarDatos(titulo, genero, "null", "null");
+                            procesos.agregarPelicula();
                             break;
                         case 2:
                             // Modificar Película
+                            procesos.modificarPelicula();
                             break;
                         case 3:
                             // Agregar Usuario
-                            int cedula;
-                            String nombre, telefono;
-                            System.out.println("Ingrese la cedula del usuario:");
-                            cedula = scanner.nextInt();
-                            scanner.nextLine();
-                            System.out.println("Ingrese el nombre del usuario:");
-                            nombre = scanner.nextLine();
-                            scanner.nextLine();
-                            System.out.println("Ingrese el telefono del usuario:");
-                            telefono = scanner.nextLine();
-                            scanner.nextLine();
-                            manejadorArchivos.IngresarDatos(cedula, nombre, telefono);
+                            procesos.agregarUsuario();
                             break;
                         case 4:
                             // Modificar Usuario
+                            procesos.modificarUsuario();
                             break;
                         case 5:
                             // Registrar alquiler de una película
+                            procesos.registrarAlquiler();
                             break;
                         case 6:
                             // Registrar devolución de película
+                            procesos.registrarDevolucion();
                             break;
                         case 7:
                             // Retroceder

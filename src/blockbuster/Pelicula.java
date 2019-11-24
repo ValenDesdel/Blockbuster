@@ -1,4 +1,4 @@
-package control_alumno_archivo;
+package blockbuster;
 
 public class Pelicula {
 
@@ -18,10 +18,6 @@ public class Pelicula {
 
     public int getIndex() {
         return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 
     public String getTitulo() {
