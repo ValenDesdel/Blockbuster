@@ -29,7 +29,7 @@ public class Procesos {
         manejadorArchivos.IngresarDatos(titulo, genero, "null", "null");
     }
 
-    public void modificarPelicula() {
+    public void modificarPelicula() throws IOException {
         System.out.println("Ingrese el índice de la película:");
         int indexPelicula = scanner.nextInt();
         scanner.nextLine();
@@ -46,7 +46,7 @@ public class Procesos {
             pelicula.setTitulo(titulo);
             pelicula.setGenero(genero);
             treeMapPeliculas.put(indexPelicula, pelicula);
-            // TODO: Modificar el archivo .txt
+            manejadorArchivos.modificarFilePelicula(pelicula);
         } else {
             System.out.println("La película no existe");
         }
@@ -65,12 +65,13 @@ public class Procesos {
         manejadorArchivos.IngresarDatos(cedula, nombre, telefono);
     }
 
-    public void modificarUsuario() {
+    public void modificarUsuario() throws IOException {
         System.out.println("Ingrese la cédula del usuario");
         int cedula = scanner.nextInt();
         scanner.nextLine();
         if (treeMapUsuarios.containsKey(cedula)) {
             Usuario usuario = (Usuario) treeMapUsuarios.get(cedula);
+            String linea = usuario.getCedula() + "," + usuario.getNombre() + "," + usuario.getTelefono();
             treeMapUsuarios.remove(cedula);
             System.out.println("Usuario a modificar: " + usuario.getCedula() + ", " + usuario.getNombre() + ", " + usuario.getTelefono());
             System.out.println("Ingresa la cédula: ");
@@ -87,7 +88,7 @@ public class Procesos {
                 usuario.setNombre(nombre);
                 usuario.setTelefono(telefono);
                 treeMapUsuarios.put(cedula, usuario);
-                // TODO: Modificar archivo .txt
+                manejadorArchivos.modificarFileUsuario(usuario, linea);
             } else {
                 System.out.println("La cédula está repetida");
                 treeMapUsuarios.put(usuario.getCedula(), usuario);
@@ -97,7 +98,7 @@ public class Procesos {
         }
     }
 
-    public void registrarAlquiler() {
+    public void registrarAlquiler() throws IOException {
         System.out.println("Ingrese la cédula del usuario: ");
         int cedula = scanner.nextInt();
         if (treeMapUsuarios.containsKey(cedula)) {
@@ -119,7 +120,7 @@ public class Procesos {
                         pelicula.setCiAlquiler(String.valueOf(cedula));
                         pelicula.setFechaDevolucion(fechaEntrega);
                         treeMapPeliculas.put(indexPelicula, pelicula);
-                        // TODO: Modificar archivo .txt de peliculas
+                        manejadorArchivos.modificarFilePelicula(pelicula);
                     } else {
                         Alquiler alquiler = new Alquiler(cedula);
                         alquiler.addPeliculasAlquilada(indexPelicula);
@@ -128,7 +129,7 @@ public class Procesos {
                         pelicula.setCiAlquiler(String.valueOf(cedula));
                         pelicula.setFechaDevolucion(fechaEntrega);
                         treeMapPeliculas.put(indexPelicula, pelicula);
-                        // TODO: Modificar archivo .txt de peliculas
+                        manejadorArchivos.modificarFilePelicula(pelicula);
                     }
                 } else {
                     System.out.println("La película está alquilada");
@@ -141,7 +142,7 @@ public class Procesos {
         }
     }
 
-    public void registrarDevolucion() {
+    public void registrarDevolucion() throws IOException {
         System.out.println("Ingrese el indice de la película: ");
         int indexPelicula = scanner.nextInt();
         scanner.nextLine();
@@ -159,7 +160,7 @@ public class Procesos {
                 treeMapAlquiler.put(cedula, alquiler);
             }
             System.out.println("Película devuelta!");
-            // TODO: Modificar registro de peliculas
+            manejadorArchivos.modificarFilePelicula(pelicula);
         } else {
             System.out.println("La película no existe");
         }
