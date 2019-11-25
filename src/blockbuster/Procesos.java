@@ -3,6 +3,8 @@ package blockbuster;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class Procesos {
     private TreeMap treeMapPeliculas;
@@ -26,6 +28,18 @@ public class Procesos {
         System.out.println("Ingrese el género de la pelicula:");
         genero = scanner.nextLine();
         scanner.nextLine();
+        boolean validacion = true;
+        if (!genero.equals("Cultural") || !genero.equals("Drama") || !genero.equals("Deportivo") || !genero.equals("Comedia")) {
+            validacion = false;
+        }
+        while(!validacion) {
+            System.out.println("Ingrese un genero valido (Cultural, Drama, Deportivo, Comedia)");
+            genero = scanner.nextLine();
+            scanner.nextLine();
+            if (genero.equals("Cultural") || genero.equals("Drama") || genero.equals("Deportivo") || genero.equals("Comedia")) {
+                validacion = true;
+            }
+        }
         manejadorArchivos.IngresarDatos(titulo, genero, "null", "null");
     }
 
@@ -43,6 +57,18 @@ public class Procesos {
             System.out.println("Ingrese el género:");
             String genero = scanner.nextLine();
             scanner.nextLine();
+            boolean validacion = true;
+            if (!genero.equals("Cultural") || !genero.equals("Drama") || !genero.equals("Deportivo") || !genero.equals("Comedia")) {
+                validacion = false;
+            }
+            while(!validacion) {
+                System.out.println("Ingrese un genero valido (Cultural, Drama, Deportivo, Comedia)");
+                genero = scanner.nextLine();
+                scanner.nextLine();
+                if (genero.equals("Cultural") || genero.equals("Drama") || genero.equals("Deportivo") || genero.equals("Comedia")) {
+                    validacion = true;
+                }
+            }
             pelicula.setTitulo(titulo);
             pelicula.setGenero(genero);
             treeMapPeliculas.put(indexPelicula, pelicula);
@@ -140,6 +166,17 @@ public class Procesos {
         } else {
             System.out.println("El usuario no existe \n Procede a crearlo");
         }
+    }
+
+    public boolean validarFecha(String fecha) {
+        try {
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+            formatoFecha.setLenient(false);
+            formatoFecha.parse(fecha);
+        } catch (ParseException e) {
+            return false;
+        }
+        return true;
     }
 
     public void registrarDevolucion() throws IOException {

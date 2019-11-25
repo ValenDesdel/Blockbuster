@@ -35,12 +35,12 @@ public class ManejadorArchivos {
     public void IngresarDatos(String titulo, String genero, String ciUsuario, String fechaDevolucion) throws IOException {
         FileWriter fileWriterPeliculas = new FileWriter(filePeliculas, true);
         try {
-            String registro = cantPeliculas + "," + titulo + "," + genero + "," + ciUsuario + "," + fechaDevolucion + "\r\n";
+            String registro = lineaPeliculas.size() + "," + titulo + "," + genero + "," + ciUsuario + "," + fechaDevolucion;
             lineaPeliculas.add(registro);
-            fileWriterPeliculas.write(registro);
+            fileWriterPeliculas.write(registro + "\r\n");
             fileWriterPeliculas.close();
-            Pelicula pelicula = new Pelicula(cantPeliculas, titulo, genero, ciUsuario, fechaDevolucion);
-            treeMapPeliculas.put(cantPeliculas, pelicula);
+            Pelicula pelicula = new Pelicula(lineaPeliculas.size(), titulo, genero, ciUsuario, fechaDevolucion);
+            treeMapPeliculas.put(lineaPeliculas.size(), pelicula);
             cantPeliculas++;
         }catch (IOException ex){
             System.out.println("No se ha encontrado el archivo");
@@ -51,9 +51,9 @@ public class ManejadorArchivos {
     public void IngresarDatos(int cedula, String nombre, String telefono) throws IOException {
         FileWriter fileWriterUsuarios = new FileWriter(this.fileUsuarios, true);
         try {
-            String registro = cedula +","+ nombre + "," + telefono + "\r\n";
+            String registro = cedula +","+ nombre + "," + telefono;
             lineaUsuarios.add(registro);
-            fileWriterUsuarios.write(registro);
+            fileWriterUsuarios.write(registro + "\r\n");
             fileWriterUsuarios.close();
             Usuario usuario = new Usuario(cedula, nombre, telefono);
             treeMapUsuarios.put(cedula, usuario);
@@ -119,8 +119,6 @@ public class ManejadorArchivos {
         if (indexAnterior != -1) {
             String lineaNueva = usuario.getCedula() + "," + usuario.getNombre() + "," + usuario.getTelefono();
             lineaUsuarios.set(indexAnterior, lineaNueva);
-            FileWriter fileWriter = new FileWriter(fileUsuarios, true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             reescribirFichero(fileUsuarios, this.lineaUsuarios);
         } else {
             System.out.println("Hubo un problema");
@@ -133,7 +131,7 @@ public class ManejadorArchivos {
         bufferedWriter.close();
         for (int i = 0; i < lineas.size(); i++) {
             FileWriter fileWriter = new FileWriter(file, true);
-            fileWriter.write(lineas.get(i)  + "\r\n");
+            fileWriter.write(lineas.get(i) + "\r\n");
             fileWriter.close();
         }
     }
