@@ -36,7 +36,9 @@ public class Main {
                     System.out.println("3. Consultar peliculas alquiladas por usuario");
                     System.out.println("4. Consultar peliculas de un género");
                     System.out.println("5. Consultar peliculas a ser devueltas en una fecha específica");
-                    System.out.println("6. Retroceder");
+                    System.out.println("6. Consultar peliculas por titulo");
+                    System.out.println("7. Consultar todas las peliculas registradas");
+                    System.out.println("8. Retroceder");
                     int accion = scanner.nextInt();
                     scanner.nextLine();
 
@@ -62,7 +64,15 @@ public class Main {
                             consultas.consultarPeliculasDevolucion();
                             break;
                         case 6:
-                            // Retroceder
+                            //Consultar peliculas por nombre
+                            consultas.consultarPeliculasPorNombre();
+                            break;
+                        case 7:
+                            //Consultar peliculas por nombre
+                            consultas.consultarListaPeliculas();
+                            break;
+                        case 8:
+
                             break;
                         default:
                             System.out.println("Opcion no valida, solo del 1 al 6...");

@@ -1,6 +1,6 @@
 0,Avengers: End Game,Cultural,null,null
 1,Inception,Drama,26475784,25/12/2019
-2,Interestellar,Cultural,26475784,10/12/2019
+2,Interstellar,Cultural,null,null
 3,Dunkerque,Cultural,null,null
 4,El Padrino,Drama,null,null
 5,Son como niños,Comedia,null,null
@@ -8,7 +8,7 @@
 7,Murder Mystery,Comedia,null,null
 8,Creed 2,Deportivo,null,null
 9,Rush,Deportivo,null,null
-10,Mandela,Cultural,null,null
-11,Lo mejor de mi,Drama,null,null
+10,Mandela,Cultural,29123456,30/10/2019
+11,Lo mejor de ti,Drama,null,null
 12,Prueba,Drama,null,null
 13,El joker,Comedia,null,null

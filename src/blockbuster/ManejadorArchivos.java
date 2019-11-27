@@ -87,6 +87,7 @@ public class ManejadorArchivos {
                     Alquiler alquiler = new Alquiler(Integer.parseInt(pelicula.getCiAlquiler()));
                     alquiler.getPeliculasAlquiladas().add(String.valueOf(pelicula.getIndex()));
                     registroAlquiler.putAlquiler(alquiler);
+                    registroAlquiler.reordenar();
             }
             this.registroPelicula.putPelicula(pelicula);
         }

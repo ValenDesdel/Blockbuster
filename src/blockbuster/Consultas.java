@@ -104,4 +104,33 @@ public class Consultas {
             System.out.println("No existen películas con ese género");
         }
     }
+
+    public void consultarPeliculasPorNombre(){
+        System.out.println("Ingresa el nombre de una pelicula: ");
+        String nombreP = scanner.nextLine();
+        scanner.nextLine();
+        boolean hayPeliculas = false;
+        for (int i = 0; i < registroPelicula.getCantPeliculas(); i++) {
+            Pelicula pelicula = registroPelicula.getPeliculaDirecto(i);
+            if(pelicula.getTitulo().equals(nombreP)){
+                System.out.println("La pelicula se encuentra en existencia, su informacion es: \n");
+                System.out.println("Su index es: " + (i+1));
+                System.out.println("Su titulo es: " + pelicula.getTitulo());
+                System.out.println("Su genero es: " + pelicula.getGenero());
+                hayPeliculas = true;
+            }
+        }
+        if (!hayPeliculas) {
+            System.out.println("No existe la pelicula con ese titulo");
+        }
+    }
+
+    public void consultarListaPeliculas(){
+        System.out.println("Lista de peliculas registradas en Blockbuster: \n");
+        for (int i = 0; i < registroPelicula.getCantPeliculas(); i++){
+            Pelicula pelicula = registroPelicula.getPeliculaDirecto(i);
+            System.out.println((i+1) + ". " + pelicula.getTitulo());
+
+        }
+    }
 }
