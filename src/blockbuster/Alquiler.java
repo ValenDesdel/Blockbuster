@@ -23,4 +23,8 @@ public class Alquiler {
         String index = String.valueOf(indexPelicula);
         this.peliculasAlquiladas.remove(index);
     }
+
+    public int getCedulaAlquiler() {
+        return cedulaAlquiler;
+    }
 }

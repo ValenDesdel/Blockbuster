@@ -6,9 +6,9 @@ import java.util.TreeMap;
 
 public class ManejadorArchivos {
 
-    private TreeMap treeMapPeliculas;
-    private TreeMap treeMapUsuarios;
-    private TreeMap treeMapAlquiler;
+    private RegistroPelicula registroPelicula;
+    private RegistroUsuario registroUsuario;
+    private RegistroAlquiler registroAlquiler;
 
     File filePeliculas = new File("peliculas.txt");
     FileReader fileReaderPeliculas = new FileReader(filePeliculas);
@@ -25,10 +25,10 @@ public class ManejadorArchivos {
     // Atributos de Usuario
     private ArrayList<String> lineaUsuarios = new ArrayList<>();
 
-    public ManejadorArchivos(TreeMap treeMapPeliculas, TreeMap treeMapUsuarios, TreeMap treeMapAlquiler) throws IOException {
-        this.treeMapPeliculas = treeMapPeliculas;
-        this.treeMapUsuarios = treeMapUsuarios;
-        this.treeMapAlquiler = treeMapAlquiler;
+    public ManejadorArchivos(RegistroPelicula registroPelicula, RegistroUsuario registroUsuario, RegistroAlquiler registroAlquiler) throws IOException {
+        this.registroPelicula = registroPelicula;
+        this.registroUsuario = registroUsuario;
+        this.registroAlquiler = registroAlquiler;
     }
 
     // Crear Pelicula
@@ -39,8 +39,8 @@ public class ManejadorArchivos {
             lineaPeliculas.add(registro);
             fileWriterPeliculas.write(registro + "\r\n");
             fileWriterPeliculas.close();
-            Pelicula pelicula = new Pelicula(lineaPeliculas.size(), titulo, genero, ciUsuario, fechaDevolucion);
-            treeMapPeliculas.put(lineaPeliculas.size(), pelicula);
+            Pelicula pelicula = new Pelicula((lineaPeliculas.size()-1), titulo, genero, ciUsuario, fechaDevolucion);
+            registroPelicula.putPelicula(pelicula);
             cantPeliculas++;
         }catch (IOException ex){
             System.out.println("No se ha encontrado el archivo");
@@ -56,7 +56,8 @@ public class ManejadorArchivos {
             fileWriterUsuarios.write(registro + "\r\n");
             fileWriterUsuarios.close();
             Usuario usuario = new Usuario(cedula, nombre, telefono);
-            treeMapUsuarios.put(cedula, usuario);
+
+            registroUsuario.putUsuario(usuario);
         }catch (IOException ex){
             System.out.println("No se ha encontrado el archivo");
         }
@@ -83,18 +84,11 @@ public class ManejadorArchivos {
             String fechaDevolucion = lineaPeliculas.get(i).split(",")[4];
             Pelicula pelicula = new Pelicula(indexPelicula, titulo, genero, ciUsuario, fechaDevolucion);
             if (!pelicula.getCiAlquiler().equals("null")) {
-                if (treeMapAlquiler.containsKey(Integer.parseInt(ciUsuario))) {
-                    Alquiler alquiler = (Alquiler) treeMapAlquiler.get(Integer.parseInt(ciUsuario));
-                    treeMapAlquiler.remove(Integer.parseInt(ciUsuario));
-                    alquiler.getPeliculasAlquiladas().add(String.valueOf(indexPelicula));
-                    treeMapAlquiler.put(Integer.parseInt(ciUsuario), alquiler);
-                } else {
                     Alquiler alquiler = new Alquiler(Integer.parseInt(pelicula.getCiAlquiler()));
                     alquiler.getPeliculasAlquiladas().add(String.valueOf(pelicula.getIndex()));
-                    treeMapAlquiler.put(Integer.parseInt(pelicula.getCiAlquiler()), alquiler);
-                }
+                    registroAlquiler.putAlquiler(alquiler);
             }
-            this.treeMapPeliculas.put(indexPelicula, pelicula);
+            this.registroPelicula.putPelicula(pelicula);
         }
     }
 
@@ -104,7 +98,7 @@ public class ManejadorArchivos {
             String nombre = lineaUsuarios.get(i).split(",")[1];
             String telefono = lineaUsuarios.get(i).split(",")[2];
             Usuario usuario = new Usuario(cedula, nombre, telefono);
-            treeMapUsuarios.put(cedula, usuario);
+            registroUsuario.putUsuario(usuario);
         }
     }
 

@@ -8,13 +8,14 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        TreeMap treeMapPeliculas = new TreeMap();
-        TreeMap treeMapUsuarios = new TreeMap();
-        TreeMap treeMapAlquiler = new TreeMap();
-        ManejadorArchivos manejadorArchivos = new ManejadorArchivos(treeMapPeliculas, treeMapUsuarios, treeMapAlquiler);
+        RegistroPelicula registroPelicula = new RegistroPelicula();
+        RegistroUsuario registroUsuario = new RegistroUsuario();
+        RegistroAlquiler registroAlquiler = new RegistroAlquiler();
+
+        ManejadorArchivos manejadorArchivos = new ManejadorArchivos(registroPelicula, registroUsuario, registroAlquiler);
         manejadorArchivos.leerRepositorio();
-        Procesos procesos = new Procesos(treeMapPeliculas, treeMapUsuarios, treeMapAlquiler, manejadorArchivos);
-        Consultas consultas = new Consultas(treeMapPeliculas, treeMapUsuarios, treeMapAlquiler);
+        Procesos procesos = new Procesos(registroPelicula, registroUsuario, registroAlquiler, manejadorArchivos);
+        Consultas consultas = new Consultas(registroPelicula, registroUsuario, registroAlquiler);
         Scanner scanner = new Scanner (System.in);
         int opciones=1;
 

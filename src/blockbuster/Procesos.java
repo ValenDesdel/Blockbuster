@@ -7,16 +7,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class Procesos {
-    private TreeMap treeMapPeliculas;
-    private TreeMap treeMapUsuarios;
-    private TreeMap treeMapAlquiler;
+    private RegistroPelicula registroPelicula;
+    private RegistroUsuario registroUsuario;
+    private RegistroAlquiler registroAlquiler;
     private ManejadorArchivos manejadorArchivos;
     private Scanner scanner  = new Scanner (System.in);
 
-    public Procesos(TreeMap treeMapPeliculas, TreeMap treeMapUsuarios, TreeMap treeMapAlquiler, ManejadorArchivos manejadorArchivos) {
-        this.treeMapPeliculas = treeMapPeliculas;
-        this.treeMapUsuarios = treeMapUsuarios;
-        this.treeMapAlquiler = treeMapAlquiler;
+    public Procesos(RegistroPelicula registroPelicula, RegistroUsuario registroUsuario, RegistroAlquiler registroAlquiler, ManejadorArchivos manejadorArchivos) {
+        this.registroPelicula = registroPelicula;
+        this.registroUsuario = registroUsuario;
+        this.registroAlquiler = registroAlquiler;
         this.manejadorArchivos = manejadorArchivos;
     }
 
@@ -30,7 +30,7 @@ public class Procesos {
         scanner.nextLine();
         boolean validacion = true;
         if (!genero.equals("Cultural") || !genero.equals("Drama") || !genero.equals("Deportivo") || !genero.equals("Comedia")) {
-            validacion = false;
+            validacion = true;
         }
         while(!validacion) {
             System.out.println("Ingrese un genero valido (Cultural, Drama, Deportivo, Comedia)");
@@ -47,9 +47,8 @@ public class Procesos {
         System.out.println("Ingrese el índice de la película:");
         int indexPelicula = scanner.nextInt();
         scanner.nextLine();
-        if (treeMapPeliculas.containsKey(indexPelicula)) {
-            Pelicula pelicula = (Pelicula) treeMapPeliculas.get(indexPelicula);
-            treeMapPeliculas.remove(indexPelicula);
+        if (registroPelicula.existePelicula(indexPelicula)) {
+            Pelicula pelicula = registroPelicula.getPeliculaDirecto(indexPelicula);
             System.out.println("Pelicula a modificar: " + pelicula.getTitulo() + ", " + pelicula.getGenero());
             System.out.println("Ingrese el título:");
             String titulo = scanner.nextLine();
@@ -59,7 +58,7 @@ public class Procesos {
             scanner.nextLine();
             boolean validacion = true;
             if (!genero.equals("Cultural") || !genero.equals("Drama") || !genero.equals("Deportivo") || !genero.equals("Comedia")) {
-                validacion = false;
+                validacion = true;
             }
             while(!validacion) {
                 System.out.println("Ingrese un genero valido (Cultural, Drama, Deportivo, Comedia)");
@@ -71,7 +70,7 @@ public class Procesos {
             }
             pelicula.setTitulo(titulo);
             pelicula.setGenero(genero);
-            treeMapPeliculas.put(indexPelicula, pelicula);
+            registroPelicula.modificarPelicula(pelicula, indexPelicula);
             manejadorArchivos.modificarFilePelicula(pelicula);
         } else {
             System.out.println("La película no existe");
@@ -95,30 +94,24 @@ public class Procesos {
         System.out.println("Ingrese la cédula del usuario");
         int cedula = scanner.nextInt();
         scanner.nextLine();
-        if (treeMapUsuarios.containsKey(cedula)) {
-            Usuario usuario = (Usuario) treeMapUsuarios.get(cedula);
+        if (registroUsuario.existeUsuario(cedula)) {
+            Usuario usuario = registroUsuario.getUsuario(cedula);
             String linea = usuario.getCedula() + "," + usuario.getNombre() + "," + usuario.getTelefono();
-            treeMapUsuarios.remove(cedula);
             System.out.println("Usuario a modificar: " + usuario.getCedula() + ", " + usuario.getNombre() + ", " + usuario.getTelefono());
             System.out.println("Ingresa la cédula: ");
             cedula = scanner.nextInt();
             scanner.nextLine();
-            if (!treeMapUsuarios.containsKey(cedula)) {
-                System.out.println("Ingresa el nombre:");
-                String nombre = scanner.nextLine();
-                scanner.nextLine();
-                System.out.println("Ingresa el teléfono:");
-                String telefono = scanner.nextLine();
-                scanner.nextLine();
-                usuario.setCedula(cedula);
-                usuario.setNombre(nombre);
-                usuario.setTelefono(telefono);
-                treeMapUsuarios.put(cedula, usuario);
-                manejadorArchivos.modificarFileUsuario(usuario, linea);
-            } else {
-                System.out.println("La cédula está repetida");
-                treeMapUsuarios.put(usuario.getCedula(), usuario);
-            }
+            System.out.println("Ingresa el nombre:");
+            String nombre = scanner.nextLine();
+            scanner.nextLine();
+            System.out.println("Ingresa el teléfono:");
+            String telefono = scanner.nextLine();
+            scanner.nextLine();
+            usuario.setCedula(cedula);
+            usuario.setNombre(nombre);
+            usuario.setTelefono(telefono);
+            registroUsuario.putUsuario(usuario);
+            manejadorArchivos.modificarFileUsuario(usuario, linea);
         } else {
             System.out.println("El usuario no existe");
         }
@@ -127,36 +120,25 @@ public class Procesos {
     public void registrarAlquiler() throws IOException {
         System.out.println("Ingrese la cédula del usuario: ");
         int cedula = scanner.nextInt();
-        if (treeMapUsuarios.containsKey(cedula)) {
+        if (registroUsuario.existeUsuario(cedula)) {
             System.out.println("Ingrese el indice de la película a alquilar:");
             int indexPelicula = scanner.nextInt();
             scanner.nextLine();
-            if (treeMapPeliculas.containsKey(indexPelicula)) {
-                Pelicula pelicula = (Pelicula) treeMapPeliculas.get(indexPelicula);
+            if (registroPelicula.existePelicula(indexPelicula)) {
+                Pelicula pelicula = registroPelicula.getPeliculaDirecto(indexPelicula);
                 if (pelicula.getCiAlquiler().equals("null")) {
                     System.out.println("Ingrese la fecha a devolver la película:  DD/MM/AAAA");
                     String fechaEntrega = scanner.nextLine();
                     scanner.nextLine();
-                    if (treeMapAlquiler.containsKey(cedula)) {
-                        Alquiler alquiler = (Alquiler) treeMapAlquiler.get(cedula);
-                        treeMapAlquiler.remove(cedula);
-                        alquiler.addPeliculasAlquilada(indexPelicula);
-                        treeMapAlquiler.put(cedula, alquiler);
-                        treeMapPeliculas.remove(indexPelicula);
-                        pelicula.setCiAlquiler(String.valueOf(cedula));
-                        pelicula.setFechaDevolucion(fechaEntrega);
-                        treeMapPeliculas.put(indexPelicula, pelicula);
-                        manejadorArchivos.modificarFilePelicula(pelicula);
-                    } else {
-                        Alquiler alquiler = new Alquiler(cedula);
-                        alquiler.addPeliculasAlquilada(indexPelicula);
-                        treeMapAlquiler.put(cedula, alquiler);
-                        treeMapPeliculas.remove(indexPelicula);
-                        pelicula.setCiAlquiler(String.valueOf(cedula));
-                        pelicula.setFechaDevolucion(fechaEntrega);
-                        treeMapPeliculas.put(indexPelicula, pelicula);
-                        manejadorArchivos.modificarFilePelicula(pelicula);
-                    }
+                    Alquiler alquiler = new Alquiler(cedula);
+                    alquiler.addPeliculasAlquilada(indexPelicula);
+                    registroAlquiler.putAlquiler(alquiler);
+                    pelicula.setCiAlquiler(String.valueOf(cedula));
+                    pelicula.setFechaDevolucion(fechaEntrega);
+                    registroPelicula.modificarPelicula(pelicula, indexPelicula);
+                    manejadorArchivos.modificarFilePelicula(pelicula);
+                    registroAlquiler.reordenar();
+
                 } else {
                     System.out.println("La película está alquilada");
                 }
@@ -168,33 +150,20 @@ public class Procesos {
         }
     }
 
-    public boolean validarFecha(String fecha) {
-        try {
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-            formatoFecha.setLenient(false);
-            formatoFecha.parse(fecha);
-        } catch (ParseException e) {
-            return false;
-        }
-        return true;
-    }
-
     public void registrarDevolucion() throws IOException {
         System.out.println("Ingrese el indice de la película: ");
         int indexPelicula = scanner.nextInt();
         scanner.nextLine();
-        if (treeMapPeliculas.containsKey(indexPelicula)) {
-            Pelicula pelicula = (Pelicula) treeMapPeliculas.get(indexPelicula);
-            treeMapPeliculas.remove(indexPelicula);
+        if (registroPelicula.existePelicula(indexPelicula)) {
+            Pelicula pelicula = registroPelicula.getPeliculaDirecto(indexPelicula);
             int cedula = Integer.parseInt(pelicula.getCiAlquiler());
             pelicula.setCiAlquiler("null");
             pelicula.setFechaDevolucion("null");
-            treeMapPeliculas.put(indexPelicula, pelicula);
-            Alquiler alquiler = (Alquiler) treeMapAlquiler.get(cedula);
-            treeMapAlquiler.remove(cedula);
+            registroPelicula.modificarPelicula(pelicula, indexPelicula);
+            Alquiler alquiler = registroAlquiler.getAlquiler(cedula);
             alquiler.devolverPelicula(indexPelicula);
             if (!alquiler.getPeliculasAlquiladas().isEmpty()) {
-                treeMapAlquiler.put(cedula, alquiler);
+                registroAlquiler.setAlquiler(alquiler, cedula);
             }
             System.out.println("Película devuelta!");
             manejadorArchivos.modificarFilePelicula(pelicula);
